@@ -1,4 +1,5 @@
 const winston = require('winston');
+const dbApp = require('../server');
 const config = {
     levels: {
         error: 0,
@@ -40,17 +41,25 @@ const logger = winston.createLogger({
     level: 'custom'
 });
 
-function loggerExp(req, res, next) {
+function requestLogger(req, res, next) {
     const {
         protocol,
         ip,
-        method
+        method,
+        body,
+        params
     } = req;
-    const date = Date.now();
-    logger.info(`Request:\n protocol -- ${protocol}\n ip -- ${ip}\n method -- ${method}`);
+
+    logger.info(
+        `Request: 
+         url -- ${protocol}${ip}
+         method -- ${method} 
+         body -- ${JSON.stringify(body)}
+         params -- ${JSON.stringify(params)}
+         ${'-'.repeat(35)}`);
     next();
 }
 
 module.exports = {
-    loggerExp
+    requestLogger
 };
