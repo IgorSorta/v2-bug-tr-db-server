@@ -2,12 +2,12 @@ const axios = require('axios');
 const mysql2 = require('mysql2');
 
 // create the connection to database
-const connection = mysql2.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'igortestDB',
-    database: 'test_tracker'
-});
+// const connection = mysql2.createConnection({
+//     host: '127.0.0.1',
+//     user: 'root',
+//     password: 'igortestDB',
+//     database: 'test_tracker'
+// });
 
 module.exports = {
     testRequest(params) {
@@ -21,7 +21,7 @@ module.exports = {
                 });
         });
     },
-    testDbQuery(query) {
+    testDbRawQuery(query) {
         return new Promise(resolve => {
             connection.query(
                 query,
@@ -34,5 +34,29 @@ module.exports = {
             });
 
         })
-    }
+    },
+    requestDbApi(url) {
+        // Request DB server by axios
+        // default method is "GET"
+        return function(data = null, method = 'GET') {
+            try {
+                let options = (method === 'POST' || method === 'PATCH') ? {
+                    url: url,
+                    method: method,
+                    data: data
+                } : {
+                    url: url,
+                    method: method,
+                    params: data
+                };
+
+                const response = axios(options);
+                if (!response) throw new Error('requestApi() error.');
+
+                return response;
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    },
 };
