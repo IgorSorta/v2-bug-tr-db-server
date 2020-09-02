@@ -19,76 +19,81 @@ const knex = require('./knex');
 // TODO deleteMessage from db
 
 
-module.exports = {
-    findAll(table) {
-        return new Promise(resolve => {
-            knex.from(table)
-                .select()
-                .then((result) => {
-                    resolve(result[0]);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    throw err
-                });
-        });
-    },
-    findBy(table, param, select) {
-        return new Promise(resolve => {
-            knex.from(table)
-                .select(select)
-                .where({
-                    name: `${param}`,
-                })
-                .then((result) => {
-                    resolve(result[0].email);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    throw err
-                });
-        });
+function findAll(table, res) {
+    knex.table(table)
+        .select()
+        .then(result => {
+            res.json({
+                data: result
+            })
+        })
+        .catch(error => console.log(error));
+}
 
-    },
-    saveToDb(table, data) {
-        return new Promise(resolve => {
-            knex.into(table)
-                .insert(data)
-                .then((result) => {
-                    resolve(result);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    throw err;
-                });
+
+function findExact(table, data, res) {
+    knex.table(table)
+        .select(data.select)
+        .where(data.where)
+        .then(result => {
+            res.json({
+                data: result
+            })
+        })
+        .catch(error => console.log(error));
+}
+
+function saveToDb(table, data, res) {
+    knex.into(table)
+        .insert(data)
+        .then((result) => {
+            res.json({
+                success: true,
+                data: result
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            throw err;
         });
-    },
-    updateData(table, data, param) {
-        return new Promise(resolve => {
-            knex.into(table)
-                .update(data)
-                .where(param)
-                .then((result) => {
-                    resolve(result);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    throw err;
-                });
+}
+
+function updateData(table, data, res) {
+    knex.into(table)
+        .where(data.param)
+        .update(data.data)
+        .then((result) => {
+            res.json({
+                success: true,
+                data: result
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            throw err;
         });
-    },
-    deleteExact(table, param) {
-        return new Promise(resolve => {
-            knex.into(table)
-                .del()
-                .where(param)
-                .then((result) => {
-                    resolve(result);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    throw err;
-                });
+}
+
+function deleteExact(table, data, res) {
+    knex.into(table)
+        .where(data)
+        .del()
+        .then((result) => {
+            res.json({
+                success: true,
+                data: result
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            throw err;
         });
-    }
+}
+
+module.exports = {
+    findAll,
+    findExact,
+    saveToDb,
+    updateData,
+    deleteExact
 };
