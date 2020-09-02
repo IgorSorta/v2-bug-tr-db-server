@@ -1,45 +1,43 @@
 const router = require('express').Router();
-const db = require('../../database/db_crud');
+const {
+    findAll,
+    findExact,
+    saveToDb,
+    updateData,
+    deleteExact
+} = require('../../database/db_crud');
 
-//TODO routes
-// request all users
-router.get('/all', async (req, res, next) => {
-    const result = await db.findAll('users');
 
-    res.status(200).send(result);
+router.get('/all', (req, res) => {
+    findAll('users', res);
 });
 
 // request user by id
-router.get('/:id', async (req, res, next) => {
-    const user = req.params;
-    const result = await db.findBy('users', user.id, 'email');
+router.post('/params', (req, res) => {
+    const data = req.body;
 
-    res.status(200).send(result);
+    findExact('users', data, res);
 });
 
 // create new user
-router.post('/new', async (req, res, next) => {
+router.post('/new', (req, res) => {
     const data = req.body;
 
-    const result = await db.saveToDb('users', data);
-    res.status(203).send(result);
+    saveToDb('users', data, res);
 });
 
 // update user data
-router.patch('/:id', async (req, res, next) => {
-    const user = req.params;
+router.post('/update', (req, res) => {
     const data = req.body;
 
-    const result = await db.updateData('users', data, user.id);
-    res.status(200).send(result);
+    updateData('users', data, res);
 });
 
 // delete user
-router.delete('/:id', async (req, res, next) => {
-    const user = req.params;
+router.post('/delete', (req, res) => {
+    const data = req.body;
 
-    const result = await db.deleteExact('users', user.id);
-    res.status(200).send(result);
+    deleteExact('users', data, res);
 });
 
 module.exports = router;
