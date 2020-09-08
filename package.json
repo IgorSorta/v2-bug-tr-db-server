@@ -1,0 +1,25 @@
+{
+    "name": "v2-bug-tr-db-server",
+    "version": "0.0.2",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "dev": "nodemon --trace-warnings server.js",
+        "start": "server.js",
+        "test": "jest --env=node"
+    },
+    "keywords": [],
+    "author": "IgorK",
+    "license": "MIT",
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "knex": "^0.21.4",
+        "morgan": "^1.10.0",
+        "mysql2": "^2.1.0"
+    },
+    "devDependencies": {
+        "axios": "^0.20.0",
+        "jest": "^26.4.2"
+    }
+}

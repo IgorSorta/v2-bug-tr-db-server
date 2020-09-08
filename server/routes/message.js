@@ -1,5 +1,6 @@
+//TODO messages
 const router = require('express').Router();
-// DB methods
+
 const {
     findAll,
     findExact,
@@ -8,44 +9,38 @@ const {
     deleteExact
 } = require('../../database/db_crud');
 
-const {
-    dbStatusCheck
-} = require('../middleware/server_middleware');
-
-const dbStatus = dbStatusCheck('users');
-router.use(dbStatus);
-
-// get all users
+// get all messages
 router.get('/all', (req, res, next) => {
-    findAll('users', res, next);
+    findAll('messages', res, next);
 });
 
-// request user by ...
+// request message by ...
 router.post('/params', (req, res, next) => {
     const data = req.body;
 
-    findExact('users', data, res, next);
+    findExact('messages', data, res, next);
 });
 
-// create new user
+// create new message
 router.post('/new', (req, res, next) => {
     const data = req.body;
-    saveToDb('users', data, res, next);
+    saveToDb('messages', data, res, next);
 
 });
 
-// update user data
+// update message data
 router.post('/update', (req, res, next) => {
     const data = req.body;
 
-    updateData('users', data, res, next);
+    updateData('messages', data, res, next);
 });
 
-// delete user
+// delete message
 router.post('/delete', (req, res, next) => {
     const data = req.body;
 
-    deleteExact('users', data, res, next);
+    deleteExact('messages', data, res, next);
 });
+
 
 module.exports = router;

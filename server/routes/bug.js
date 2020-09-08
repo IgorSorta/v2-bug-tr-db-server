@@ -1,5 +1,5 @@
 const router = require('express').Router();
-// DB methods
+
 const {
     findAll,
     findExact,
@@ -8,44 +8,38 @@ const {
     deleteExact
 } = require('../../database/db_crud');
 
-const {
-    dbStatusCheck
-} = require('../middleware/server_middleware');
-
-const dbStatus = dbStatusCheck('users');
-router.use(dbStatus);
-
-// get all users
+// get all bugs
 router.get('/all', (req, res, next) => {
-    findAll('users', res, next);
+    findAll('bugs', res, next);
 });
 
-// request user by ...
+// request bug by ...
 router.post('/params', (req, res, next) => {
     const data = req.body;
 
-    findExact('users', data, res, next);
+    findExact('bugs', data, res, next);
 });
 
-// create new user
+// create new bug
 router.post('/new', (req, res, next) => {
     const data = req.body;
-    saveToDb('users', data, res, next);
+    saveToDb('bugs', data, res, next);
 
 });
 
-// update user data
+// update bug data
 router.post('/update', (req, res, next) => {
     const data = req.body;
 
-    updateData('users', data, res, next);
+    updateData('bugs', data, res, next);
 });
 
-// delete user
+// delete bug
 router.post('/delete', (req, res, next) => {
     const data = req.body;
 
-    deleteExact('users', data, res, next);
+    deleteExact('bugs', data, res, next);
 });
+
 
 module.exports = router;

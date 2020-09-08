@@ -1,25 +1,11 @@
 // Connect to server on localhost
 const knex = require('./knex');
+const {
+    handleDbErrors,
+} = require('./db_handlers');
 
-// TODO findUsers in db
-// TODO findUser in db by id
-// TODO findMessages in db
-// TODO findMessage in db by id
-// TODO findBugs in db
-// TODO findBug in db by id
-
-// TODO saveUser to db
-// TODO saveMessage to db
-// TODO saveBug to db
-
-// TODO update method
-
-// TODO deleteUser from db
-// TODO deleteBug from db
-// TODO deleteMessage from db
-
-
-function findAll(table, res) {
+// Find all data in current table
+function findAll(table, res, next) {
     knex.table(table)
         .select()
         .then(result => {
@@ -27,23 +13,39 @@ function findAll(table, res) {
                 data: result
             })
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            handleDbErrors(error);
+
+            next(error);
+        });
 }
 
-
-function findExact(table, data, res) {
+// Find data by its parameter
+function findExact(table, data, res, next) {
     knex.table(table)
         .select(data.select)
         .where(data.where)
         .then(result => {
+
+            if (result.length == 0 || result == null) {
+                res.json({
+                    message: `Data where ${JSON.stringify(data.where)} not found.`
+                });
+                throw new Error('Data not found')
+            }
             res.json({
                 data: result
             })
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            handleDbErrors(error);
+
+            next(error);
+        });
 }
 
-function saveToDb(table, data, res) {
+// Save data to db.
+function saveToDb(table, data, res, next) {
     knex.into(table)
         .insert(data)
         .then((result) => {
@@ -52,13 +54,15 @@ function saveToDb(table, data, res) {
                 data: result
             });
         })
-        .catch((err) => {
-            console.log(err);
-            throw err;
+        .catch(error => {
+            handleDbErrors(error);
+
+            next(error);
         });
 }
 
-function updateData(table, data, res) {
+// Update data in db. where parameter is
+function updateData(table, data, res, next) {
     knex.into(table)
         .where(data.param)
         .update(data.data)
@@ -68,13 +72,15 @@ function updateData(table, data, res) {
                 data: result
             });
         })
-        .catch((err) => {
-            console.log(err);
-            throw err;
+        .catch(error => {
+            handleDbErrors(error);
+
+            next(error);
         });
 }
 
-function deleteExact(table, data, res) {
+// Delete data where parameter is
+function deleteExact(table, data, res, next) {
     knex.into(table)
         .where(data)
         .del()
@@ -84,9 +90,9 @@ function deleteExact(table, data, res) {
                 data: result
             });
         })
-        .catch((err) => {
-            console.log(err);
-            throw err;
+        .catch(error => {
+            handleDbErrors(error);
+            next(error)
         });
 }
 
